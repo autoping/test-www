@@ -8,7 +8,6 @@ $(function () {
     .then(fp => fp.get())
     .then(result => {
       userId = result.visitorId
-      console.log(userId)
     });
 
   function refreshMessageList() {
@@ -20,10 +19,12 @@ $(function () {
       const container = $("#messageListContainer");
       container.empty();
       result.items.forEach(message => {
-        const messageDiv = $("<div></div>").appendTo(container);
-        $("<div></div>").html(message.authorId).appendTo(messageDiv);
+        const messageDiv = $("<div></div>");
+        $("<hr/>").appendTo(messageDiv);
+        $("<div></div>").html("Author fingerprint: " + message.authorId).appendTo(messageDiv);
         $("<div></div>").html(message.content).appendTo(messageDiv);
-        $("<div></div>").html(message.createdAt).appendTo(messageDiv);
+        $("<div></div>").html("Sent: " + message.createdAt).appendTo(messageDiv);
+        container.prepend(messageDiv);
       });
     }).fail(function (error) {
       alert("Error: " + JSON.stringify(error));
