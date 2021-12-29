@@ -9,13 +9,20 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-      - uses: unfor19/install-aws-cli-action@v1
+      - name: Install AWS CLI
+        uses: unfor19/install-aws-cli-action@v1
 
-      - name: Run a multi-line script
+      - name: Checkout the source code
+        uses: actions/checkout@v2
+      
+      - name: Deploy dist to AWS S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          AWS_DEFAULT_REGION: ${{secrets.AWS_DEFAULT_REGION}}
+          AWS_DEFAULT_OUTPUT: json
         run: |
-          aws --version
+          aws s3 sync ./dist s3://${{secrets.AWS_BUCKET_NAME}}/
